@@ -1,9 +1,11 @@
-function [bboxes, scores] = detect(imgPath)
+function [bboxes, scores] = predict_model(imgPath)
+ model = get_model();
+ 
  % Read the image.
  I = imread(imgPath);
  title('image for predict')
         
- model = load('models\detector_23-Apr-2021_13-34-15.mat')
+ model = load(model.zipPath);
  % Run the detector.
  [bboxes, scores] = detect(model.detector, I);
         
@@ -11,7 +13,9 @@ function [bboxes, scores] = detect(imgPath)
  if (isempty(bboxes))
      return;
  end
-       
+ 
+ save_prediction(max(scores),imgPath);   
+ 
  I = insertObjectAnnotation(I,'rectangle',bboxes, scores);
  figure
  imshow(I)
